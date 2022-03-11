@@ -7,6 +7,7 @@ class Product:
         self.name = name
         self.price = price
         self.available = available
+        self.quantity = 0
 
     @staticmethod
     def get(id):
