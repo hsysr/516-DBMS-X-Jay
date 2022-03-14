@@ -54,3 +54,12 @@ AND sid = :sid
                               sid=sid,
                               pid=pid,
                               price=price)
+
+    def remove_inventory(pid, sid):
+        app.db.execute('''
+DELETE FROM Inventory
+WHERE pid = :pid
+AND sid = :sid
+''',
+                              sid=sid,
+                              pid=pid,)

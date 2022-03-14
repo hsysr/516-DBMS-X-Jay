@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Make Changes to Your Inventory</h2>
+<form action="" method="POST">
+  {{ form.hidden_tag() }}
+  {% for iform in form.forms %}
+    {{ iform.hidden_tag() }}
+  {% endfor %}
+  <table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Remove from Inventory</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(inventory_products|length) %}
+        <tr>
+          <th scope="row">{{ inventory_products[i].pid }}</th>
+          <td>{{ names[i] }}</td>
+          <td>
+            <p>
+              {{ form.forms[i].quantity.label }}<br/>
+              {{ form.forms[i].quantity(size=32) }}<br/>
+              {% for error in form.forms[i].quantity.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+            </p>
+          </td>
+          <td>
+            <p>
+              {{ form.forms[i].price.label }}<br/>
+              {{ form.forms[i].price(size=32) }}<br/>
+              {% for error in form.forms[i].price.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+            </p>
+          </td>
+          <td><a href="{{ '/remove_from_inventory/' + inventory_products[i].id|string }}">Remove</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button>Submit</button>
+</form>
+
+{% endblock %}

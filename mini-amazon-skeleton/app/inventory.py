@@ -20,8 +20,20 @@ class InventoryForm(FlaskForm):
 class InventoryListForm(FlaskForm):
 	forms = FieldList(FormField(InventoryForm))
 
-@bp.route('/inventory', methods = ['GET', 'POST'])
+@bp.route('/inventory', methods = ['GET'])
 def inventory():
+    if not current_user.is_authenticated:
+        return redirect(url_for('users.login'))
+    inventories = Inventory.get_all_by_sid(current_user.id)
+
+    names = [Product.get(invent.pid).name for invent in inventories]
+
+    return render_template('inventory.html',
+                           inventory_products=inventories,
+                           names = names)
+
+@bp.route('/change_inventory', methods = ['GET', 'POST'])
+def change_inventory():
     if not current_user.is_authenticated:
         return redirect(url_for('users.login'))
     inventories = Inventory.get_all_by_sid(current_user.id)
@@ -34,6 +46,7 @@ def inventory():
                     Inventory.change_quantity(inventories[i].pid, current_user.id, iform.quantity.data)
                 if (inventories[i].price != iform.price.data):
                     Inventory.change_price(inventories[i].pid, current_user.id, iform.price.data)
+            return redirect(url_for('inventory.inventory'))
     else:
         for invent in inventories:
             form.forms.append_entry()
@@ -42,15 +55,12 @@ def inventory():
 
     names = [Product.get(invent.pid).name for invent in inventories]
 
-    return render_template('inventory.html',
+    return render_template('change_inventory.html',
                            inventory_products=inventories,
                            form = form,
                            names = names)
 
-@bp.route('/remove_from_inventory/<id>')
-def remove_from_inventory(id):
-    global products
-    for i in range(len(products)):
-        if (products[i].id == int(id)):
-            products.pop(i)
-            return(redirect(url_for('inventory.inventory')))
+@bp.route('/remove_from_inventory/<pid>')
+def remove_from_inventory(pid):
+    Inventory.remove_inventory(pid, current_user.id)
+    return(redirect(url_for('inventory.inventory')))
