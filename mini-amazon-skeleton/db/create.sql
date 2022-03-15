@@ -22,3 +22,23 @@ CREATE TABLE Purchases (
     pid INT NOT NULL REFERENCES Products(id),
     time_purchased timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
 );
+
+CREATE TABLE public.Inventory (
+    pid integer NOT NULL,
+    price numeric NOT NULL,
+    quantity integer NOT NULL,
+    sid integer NOT NULL,
+    description character varying(255)
+);
+
+
+ALTER TABLE public.inventory OWNER TO hsysr;
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_pkey PRIMARY KEY (pid, sid);
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_pid_fkey FOREIGN KEY (pid) REFERENCES public.products(id);
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_sid_fkey FOREIGN KEY (sid) REFERENCES public.users(id);
