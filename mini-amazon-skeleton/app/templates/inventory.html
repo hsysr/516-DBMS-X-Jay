@@ -27,6 +27,7 @@
       {% endfor %}
     </tbody>
   </table>
-    <a href="{{ '/change_inventory' }}">Make Changes</a>
+    <a href="{{ url_for('inventory.change_inventory') }}">Make Changes</a></br>
+    <a href="{{ url_for('inventory.add_too_inventory') }}">Add Product to Inventory</a>
 
 {% endblock %}

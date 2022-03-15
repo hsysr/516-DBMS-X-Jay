@@ -55,6 +55,7 @@ AND sid = :sid
                               pid=pid,
                               price=price)
 
+    @staticmethod
     def remove_inventory(pid, sid):
         app.db.execute('''
 DELETE FROM Inventory
@@ -62,4 +63,15 @@ WHERE pid = :pid
 AND sid = :sid
 ''',
                               sid=sid,
-                              pid=pid,)
+                              pid=pid)
+
+    @staticmethod
+    def add_inventory(pid, sid, quantity, price):
+        app.db.execute('''
+INSERT INTO Inventory(pid, sid, quantity, price)
+VALUES(:pid, :sid, :quantity, :price)
+''',
+                              sid=sid,
+                              pid=pid,
+                              quantity = quantity,
+                              price = price)

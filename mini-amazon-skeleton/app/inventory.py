@@ -1,15 +1,19 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from flask_wtf import FlaskForm, Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, DecimalField, FormField, FieldList
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, NumberRange, InputRequired
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.datastructures import MultiDict
 
 from .models.product import Product
 from .models.inventory import Inventory
 
+import os
+
 from flask import Blueprint
 bp = Blueprint('inventory', __name__)
+app = Flask(__name__)
 
 class InventoryForm(FlaskForm):
     quantity = IntegerField('Quantity',
@@ -64,3 +68,28 @@ def change_inventory():
 def remove_from_inventory(pid):
     Inventory.remove_inventory(pid, current_user.id)
     return(redirect(url_for('inventory.inventory')))
+
+class AddInventoryForm(FlaskForm):
+    name = StringField('Product Name', validators=[DataRequired()])
+
+    image = FileField('Upload Product Image', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Please upload an image(.jpg, .png) file')])
+
+    quantity = IntegerField('Quantity',
+                            validators=[NumberRange(min=0, message='Quantity cannot be negative')])
+    price = DecimalField('Price',
+                         validators=[DataRequired(message='Quantity must be an number'), NumberRange(min=0, message='Price cannot be negative')])
+
+@bp.route('/add_to_inventory', methods = ['GET', 'POST'])
+def add_too_inventory():
+    if not current_user.is_authenticated:
+        return redirect(url_for('users.login'))
+    form = AddInventoryForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            new_product = Product.add_product(form.name.data, form.price.data)
+            Inventory.add_inventory(new_product.id, current_user.id, form.quantity.data, form.price.data)
+            form.image.data.save(os.path.join(app.root_path, 'static', 'images', str(new_product.id) + '.png'))
+            return(redirect(url_for('inventory.inventory')))
+    return render_template('add_inventory.html',
+                           form = form)
+

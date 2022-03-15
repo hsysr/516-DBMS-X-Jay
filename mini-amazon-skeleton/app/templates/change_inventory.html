@@ -17,7 +17,6 @@
         <th scope="col">Product Name</th>
         <th scope="col">Quantity</th>
         <th scope="col">Price</th>
-        <th scope="col">Remove from Inventory</th>
       </tr>
     </thead>
     <tbody>
@@ -43,7 +42,6 @@
               {% endfor %}
             </p>
           </td>
-          <td><a href="{{ '/remove_from_inventory/' + inventory_products[i].id|string }}">Remove</a></td>
         </tr>
       {% endfor %}
     </tbody>
