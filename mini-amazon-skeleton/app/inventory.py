@@ -19,9 +19,9 @@ app = Flask(__name__)
 
 class InventoryForm(FlaskForm):
     quantity = IntegerField('Quantity',
-                            validators=[NumberRange(min=0, max = 2147483647, message='Quantity exceeds range')], default = 1)
+                            validators=[NumberRange(min=0, max = 2147483647, message='Quantity exceeds valid range')], default = 1)
     price = DecimalField('Price',
-                         validators=[DataRequired(message='Quantity must be an number'), NumberRange(min=0, message='Price cannot be negative')], default = 1)
+                         validators=[DataRequired(message='Price must be an number'), NumberRange(min=0, max = 2147483647, message='Price exceeds valid range')], default = 1)
     descrip = TextAreaField('Description',
                             validators=[DataRequired(), Length(max=250, message="Only 250 characters allowed")],
                             render_kw={"rows": 6, "cols": 50})
@@ -90,9 +90,9 @@ class AddInventoryForm(FlaskForm):
     image = FileField('Upload Product Image', validators=[FileRequired(), FileAllowed(['jpg','png'], 'Please upload an image(.jpg, .png) file')])
 
     quantity = IntegerField('Quantity',
-                            validators=[NumberRange(min=0, message='Quantity cannot be negative')])
+                            validators=[NumberRange(min=0, max =2147483647, message='Quantity exceeds valid range')])
     price = DecimalField('Price',
-                         validators=[DataRequired(message='Quantity must be an number'), NumberRange(min=0, message='Price cannot be negative')])
+                         validators=[DataRequired(message='Quantity must be an number'), NumberRange(min=0, max =2147483647, message='Price exceeds valid range')])
     descrip = TextAreaField('Description',
                             validators=[DataRequired(), Length(max=250, message="Only 250 characters allowed")],
                             render_kw={"rows": 6, "cols": 50})
