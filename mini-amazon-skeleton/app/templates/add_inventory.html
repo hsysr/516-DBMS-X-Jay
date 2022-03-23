@@ -10,10 +10,11 @@
   <table class='table table-hover table-bordered container'>
     <thead class="thead-dark">
       <tr>
-        <th scope="col">{{ form.name.label }}</th>
-        <th scope="col">{{ form.image.label }}</th>
-        <th scope="col">{{ form.quantity.label }}</th>
-        <th scope="col">{{ form.price.label }}</th>
+        <th scope="col" style = "width:15%;">{{ form.name.label }}</th>
+        <th scope="col" style = "width:15%;">{{ form.image.label }}</th>
+        <th scope="col" style = "width:15%;">{{ form.quantity.label }}</th>
+        <th scope="col" style = "width:15%;">{{ form.price.label }}</th>
+        <th scope="col">{{ form.descrip.label }}</th>
       </tr>
     </thead>
     <tbody>
@@ -36,7 +37,7 @@
         </td>
         <td>
           <p>
-            {{ form.quantity(size=32) }}</br>
+            {{ form.quantity(size=16) }}</br>
             {% for error in form.quantity.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
@@ -44,8 +45,16 @@
         </td>
         <td>
           <p>
-            {{ form.price(size=32) }}</br>
+            {{ form.price(size=16) }}</br>
             {% for error in form.price.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+          </p>
+        </td>
+        <td>
+          <p>
+            {{ form.descrip}}</br>
+            {% for error in form.descrip.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
           </p>

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Your info</h1>
+<p>Firstname: {{userinfo.firstname}}</p>
+<p>Lastname: {{userinfo.lastname}}</p>
+<p>Email:{{userinfo.email}}</p>
+<p>Address: {{userinfo.address}}</p>
+<p>Balance:{{userinfo.balance}}</p>
+
+<a href="{{ url_for('users.editProfile') }}" type="button" class="btn btn-light">Edit Profile</a>
+<hr/>
+<a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Go to Your Inventory</a>
+    
+<h1>Your Cart</h1>
+
+    
+<h1>View Feedback</h1>
+{% endblock %}
+

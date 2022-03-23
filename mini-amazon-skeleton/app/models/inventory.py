@@ -2,16 +2,17 @@ from flask import current_app as app
 
 
 class Inventory:
-    def __init__(self, pid, sid, quantity, price):
+    def __init__(self, pid, sid, quantity, price, description):
         self.pid = pid
         self.sid = sid
         self.quantity = quantity
         self.price = price
+        self.description = description
 
     @staticmethod
     def get(pid, sid):
         rows = app.db.execute('''
-SELECT pid, sid, quantity, price
+SELECT pid, sid, quantity, price, description
 FROM Inventory
 WHERE pid = :pid
 AND sid = :sid
@@ -23,7 +24,7 @@ AND sid = :sid
     @staticmethod
     def get_all_by_sid(sid):
         rows = app.db.execute('''
-SELECT pid, sid, quantity, price
+SELECT pid, sid, quantity, price, description
 FROM Inventory
 WHERE sid = :sid
 ORDER BY pid
@@ -56,6 +57,20 @@ AND sid = :sid
                               price=price)
 
     @staticmethod
+    def change_inventory(pid, sid, quantity, price, description):
+        app.db.execute('''
+UPDATE Inventory
+SET price = :price, quantity = :quantity, description = :description
+WHERE pid = :pid
+AND sid = :sid
+''',
+                              sid=sid,
+                              pid=pid,
+                              quantity=quantity,
+                              price=price,
+                              description=description)
+
+    @staticmethod
     def remove_inventory(pid, sid):
         app.db.execute('''
 DELETE FROM Inventory
@@ -66,12 +81,13 @@ AND sid = :sid
                               pid=pid)
 
     @staticmethod
-    def add_inventory(pid, sid, quantity, price):
+    def add_inventory(pid, sid, quantity, price, description):
         app.db.execute('''
-INSERT INTO Inventory(pid, sid, quantity, price)
-VALUES(:pid, :sid, :quantity, :price)
+INSERT INTO Inventory(pid, sid, quantity, price, description)
+VALUES(:pid, :sid, :quantity, :price, :description)
 ''',
                               sid=sid,
                               pid=pid,
                               quantity = quantity,
-                              price = price)
+                              price = price,
+                              description = description)

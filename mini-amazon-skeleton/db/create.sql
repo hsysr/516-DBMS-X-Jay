@@ -23,22 +23,37 @@ CREATE TABLE Purchases (
     time_purchased timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
 );
 
-CREATE TABLE public.Inventory (
+------------------------------------
+-- below are changes for users
+
+
+ALTER TABLE users
+ADD COLUMN address TEXT;
+
+ALTER TABLE users
+ADD COLUMN balance INT;
+
+UPDATE users SET balance = 0 WHERE balance is NULL;
+
+------------------------------------
+-- below are changes for inventory
+
+
+CREATE TABLE Inventory (
     pid integer NOT NULL,
+    sid integer NOT NULL,
     price numeric NOT NULL,
     quantity integer NOT NULL,
-    sid integer NOT NULL,
     description character varying(255)
 );
 
 
-ALTER TABLE public.inventory OWNER TO hsysr;
 
-ALTER TABLE ONLY public.inventory
+ALTER TABLE ONLY inventory
     ADD CONSTRAINT inventory_pkey PRIMARY KEY (pid, sid);
 
-ALTER TABLE ONLY public.inventory
-    ADD CONSTRAINT inventory_pid_fkey FOREIGN KEY (pid) REFERENCES public.products(id);
+ALTER TABLE ONLY inventory
+    ADD CONSTRAINT inventory_pid_fkey FOREIGN KEY (pid) REFERENCES products(id);
 
-ALTER TABLE ONLY public.inventory
-    ADD CONSTRAINT inventory_sid_fkey FOREIGN KEY (sid) REFERENCES public.users(id);
+ALTER TABLE ONLY inventory
+    ADD CONSTRAINT inventory_sid_fkey FOREIGN KEY (sid) REFERENCES users(id);

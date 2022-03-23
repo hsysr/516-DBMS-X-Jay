@@ -10,6 +10,7 @@
     <tr>
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Image</th>
       <th scope="col">Price</th>
     </tr>
   </thead>
@@ -17,7 +18,8 @@
     {% for product in avail_products%}
       <tr>
         <th scope="row">{{product.id}}</th>
-        <td>{{product.name}}</td>
+        <td>{{product.name}}<br><a href="{{ url_for('products.details', pid = product.id) }}" class="btn btn-primary btn-lg" role="button">Product Details</a></td>
+        <td><img src="{{url_for('static', filename='images/'+product.id|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
         <td>{{product.price}}</td>
       </tr>
     {% endfor %}
