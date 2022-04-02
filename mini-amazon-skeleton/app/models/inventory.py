@@ -82,7 +82,8 @@ AND sid = :sid
 
     @staticmethod
     def add_inventory(pid, sid, quantity, price, description):
-        app.db.execute('''
+        try:
+          app.db.execute('''
 INSERT INTO Inventory(pid, sid, quantity, price, description)
 VALUES(:pid, :sid, :quantity, :price, :description)
 ''',
@@ -91,3 +92,9 @@ VALUES(:pid, :sid, :quantity, :price, :description)
                               quantity = quantity,
                               price = price,
                               description = description)
+        except Exception as e:
+            # likely inventory already exist; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+        return "success"

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br><br>
+{% if current_user.is_authenticated %}
+  {% if cart|length != 0 %}
+  <h2>Your Cart:</h2>
+  <table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Image</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in cart%}
+        <tr>
+          <th scope="row">{{product.id}}</th>
+          <td>{{product.name}}<br></td>
+          <td><img src="{{url_for('static', filename='images/'+product.id|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
+          <td>{{product.price}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <h4>Your cart is empty!</h4>
+  {% endif %}
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart!</p>
+{% endif %}
+
+<br><br>
+<a href="{{ url_for('index.index') }}" class="btn btn-primary btn-lg" role="button">Back to index</a>
+
+{% endblock %}

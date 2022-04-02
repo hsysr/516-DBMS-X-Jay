@@ -54,7 +54,7 @@ class RegistrationForm(FlaskForm):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email～')
 
-def buildEditProfileForm(id,Pemail,Pfirstname,Plastname,Paddress,Pbalance):
+def buildEditProfileForm(id,Pemail,Pfirstname,Plastname,Paddress):
     class EditProfileForm(FlaskForm):
         firstname = StringField('First Name',default=Pfirstname, validators=[DataRequired()])
         lastname = StringField('Last Name', default=Plastname,validators=[DataRequired()])
@@ -64,7 +64,6 @@ def buildEditProfileForm(id,Pemail,Pfirstname,Plastname,Paddress,Pbalance):
             'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
         address = StringField('Address',default=Paddress, validators=[DataRequired()])
-        balance = IntegerField('Balance', default=Pbalance,validators=[NumberRange(min=0, max=10000)])
         submit = SubmitField('Update')
 
         def validate_email(self, email):
@@ -72,7 +71,18 @@ def buildEditProfileForm(id,Pemail,Pfirstname,Plastname,Paddress,Pbalance):
                 raise ValidationError('Already a user with this email.')
     return EditProfileForm()
 
+class BalanceTopupForm(FlaskForm):
+    topup = IntegerField('Topup(0-10000)', default=10,validators=[NumberRange(min=0, max=10000)])
+    submit = SubmitField('Process')
 
+def buildBalanceWithdrawForm(balance):
+    class balanceWithdrawForm(FlaskForm):
+        fieldStr = 'Withdraw(0-'+str(balance)+')'
+        withdraw = IntegerField(fieldStr, default=0,validators=[NumberRange(min=0, max=balance)])
+        submit = SubmitField('Process')
+    return balanceWithdrawForm()
+        
+        
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -107,14 +117,46 @@ def editProfile():
     info = User.get(current_user.id)
     if info is None:
         return redirect(url_for('users.login'))
-    form = buildEditProfileForm(info.id,info.email, info.firstname, info.lastname, info.address, info.balance)
+    form = buildEditProfileForm(info.id,info.email, info.firstname, info.lastname, info.address)
     if form.validate_on_submit():
         if User.editProfile(current_user.id, form.email.data,
                          form.password.data,
                          form.firstname.data,
-                         form.lastname.data, form.address.data,form.balance.data):
+                         form.lastname.data, form.address.data):
             flash('Edit success!')
             return redirect(url_for('users.profile'))
     
     return render_template('editProfile.html',title='edit profile_title',userinfo=info,form=form)
     
+@bp.route('/balancetopup', methods=['GET','POST'])
+def balanceTopup():
+    info = User.get(current_user.id)
+    if info is None:
+        return redirect(url_for('users.login'))
+    form = BalanceTopupForm()
+    if form.validate_on_submit():
+        if User.balanceTopup(info.id, info.balance, form.topup.data):
+            flash('Topup succeed!')
+            return redirect(url_for('users.profile'))
+    return render_template('balanceTopup.html',title='balance topup',form=form)
+    
+@bp.route('/balancewithdraw', methods=['GET','POST'])
+def balanceWithdraw():
+    info = User.get(current_user.id)
+    if info is None:
+        return redirect(url_for('users.login'))
+    form = buildBalanceWithdrawForm(info.balance)
+    if form.validate_on_submit():
+        if User.balanceWithdraw(info.id, info.balance, form.withdraw.data):
+            flash('Withdraw succeed!')
+            return redirect(url_for('users.profile'))
+    return render_template('balanceWithdraw.html',title='balance withdraw',form=form)
+        
+
+@bp.route('/<variable>/publicProfile', methods=['GET','POST'])
+def publicProfile(variable):
+    info = User.get(variable)
+    if info is None:
+        flash('The user does not exist!')
+        return
+    return render_template('publicProfile.html',title='publicProfile',info=info)

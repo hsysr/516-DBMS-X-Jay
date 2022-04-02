@@ -4,6 +4,43 @@
 
 <br><br>
 
+<form action="" method="post" novalidate>
+  {{ searchform.hidden_tag() }}
+  <p>
+    {{ searchform.namekeyword.label }}<br/>
+    {{ searchform.namekeyword(size=32) }}<br/>
+    {% for error in searchform.namekeyword.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ searchform.categorykeyword.label }}<br/>
+    {{ searchform.categorykeyword(size=32) }}<br/>
+    {% for error in searchform.categorykeyword.errors %}
+    <span style="color: red;">[{{ orderingerror }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ searchform.sortfield.label }}<br/>
+    {{ searchform.sortfield() }}<br/>
+    {% for error in searchform.sortfield.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+  </p>
+  {{ searchform.submit(class_="btn btn-black") }}
+</form>
+
 <h2>Products for sale:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -11,7 +48,9 @@
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
       <th scope="col">Image</th>
-      <th scope="col">Price</th>
+      <th scope="col">Category</th>
+      <th scope="col">Minimum Price</th>
+      <!-- <th scope="col">Price</th> -->
     </tr>
   </thead>
   <tbody>
@@ -20,7 +59,9 @@
         <th scope="row">{{product.id}}</th>
         <td>{{product.name}}<br><a href="{{ url_for('products.details', pid = product.id) }}" class="btn btn-primary btn-lg" role="button">Product Details</a></td>
         <td><img src="{{url_for('static', filename='images/'+product.id|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
-        <td>{{product.price}}</td>
+        <td>{{product.category}}</td>
+        <td>{{product.minprice}}</td>
+        <!-- <td>{{product.price}}</td> -->
       </tr>
     {% endfor %}
   </tbody>

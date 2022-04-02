@@ -73,16 +73,16 @@ RETURNING id
             return None
 
     @staticmethod
-    def editProfile(id, email, password, firstname, lastname,address,balance):
+    def editProfile(id, email, password, firstname, lastname,address):
         try:
             rows = app.db.execute("""
-UPDATE users SET email=:email, password=:password,firstname=:firstname,lastname=:lastname,address=:address, balance=:balance
+UPDATE users SET email=:email, password=:password,firstname=:firstname,lastname=:lastname,address=:address
 WHERE users.id = :id
 RETURNING id
 """,
                                   email=email,
                                   password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname,address=address,balance=balance,id=id)
+                                  firstname=firstname, lastname=lastname,address=address,id=id)
             id = rows[0][0]
             return User.get(id)
         except Exception as e:
@@ -91,8 +91,39 @@ RETURNING id
             print(str(e))
             return None
 
-
-
+    @staticmethod
+    def balanceTopup(id, prev_balance, topup):
+        try:
+            new_balance = prev_balance + topup
+            rows = app.db.execute("""
+UPDATE users SET balance=:balance
+WHERE users.id=:id
+RETURNING id
+""",
+                    balance=new_balance, id=id)
+            id = rows[0][0]
+            return User.get(id)
+        except Exception as e:
+            print(str(e))
+            return None
+            
+    @staticmethod
+    def balanceWithdraw(id, prev_balance, withdraw):
+        try:
+            new_balance = prev_balance - withdraw
+            rows = app.db.execute("""
+UPDATE users SET balance=:balance
+WHERE users.id=:id
+RETURNING id
+""",
+                    balance=new_balance, id=id)
+            id = rows[0][0]
+            return User.get(id)
+        except Exception as e:
+            print(str(e))
+            return None
+            
+            
     @staticmethod
     @login.user_loader
     def get(id):
