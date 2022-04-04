@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Your info</h1>
+<p>Firstname: {{userinfo.firstname}}</p>
+<p>Lastname: {{userinfo.lastname}}</p>
+<p>Email:{{userinfo.email}}</p>
+<p>Address: {{userinfo.address}}</p>
+<p>Balance:{{userinfo.balance}}</p>
+
+<a href="{{ url_for('users.editProfile') }}" type="button" class="btn btn-light">Edit Profile</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{{ url_for('users.balanceTopup') }}" type="button" class="btn btn-light">Balance top-up</a>
+<a href="{{ url_for('users.balanceWithdraw') }}" type="button" class="btn btn-light">Balance Withdraw</a>
+
+<hr/>
+<a href="{{ url_for('products.cart') }}" type="button" class="btn btn-light">Your Cart</a>
+<a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
+
+
+
+    
+<h1>View Feedback</h1>
+{% endblock %}
+
