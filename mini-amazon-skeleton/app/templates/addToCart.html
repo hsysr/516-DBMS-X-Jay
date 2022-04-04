@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>From seller(id):{{sid}}</p>
+<h1>Adding this item your cart</h1>
 
-<p>to buy product(id):{{pid}}</p>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.quantity.label }}<br/>
+        {{ form.quantity(size=32) }}<br/>
+        {% for error in form.quantity.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      
+      <p>{{ form.submit() }}</p>
+    </form>
 
-<p> TODO: an interface to add # of products into cart</p>
 
 
 

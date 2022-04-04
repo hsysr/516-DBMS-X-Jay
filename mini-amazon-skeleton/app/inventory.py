@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import current_user
 from flask_wtf import FlaskForm, Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, DecimalField, FormField, FieldList, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, DecimalField, FormField, FieldList, TextAreaField, SelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, NumberRange, InputRequired, Length
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.datastructures import MultiDict
@@ -94,7 +94,7 @@ class AddInventoryForm(FlaskForm):
     descrip = TextAreaField('Description',
                             validators=[DataRequired(), Length(max=250, message="Only 250 characters allowed")],
                             render_kw={"rows": 6, "cols": 50})
-    category = StringField('category', validators=[DataRequired(), Length(max=20, message="Only 20 characters allowed")])
+    category = SelectMultipleField('Category', choices=[('art','art'),('bathroom','bathroom'),('drink','drink'),('electronics','electronics'),('food','food'),('kitchen&houseware','kitchen&houseware'),('outdoors','outdoors')],validators=[DataRequired()])
 
 
 @bp.route('/add_to_inventory', methods = ['GET', 'POST'])
@@ -104,7 +104,7 @@ def add_to_inventory():
     form = AddInventoryForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            new_product = Product.add_product(form.name.data, form.category.data)
+            new_product = Product.add_product(form.name.data, form.category.data[0])
             result = Inventory.add_inventory(new_product.id, current_user.id, form.quantity.data, form.price.data, form.descrip.data)
             if result is None:
                 flash('This product already in your inventory')
