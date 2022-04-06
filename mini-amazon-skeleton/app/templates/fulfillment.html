@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% for message in get_flashed_messages() %}
+<p> {{ message }} <p>
+{% endfor %}
+
+
+<form action="" method="post">
+  {{ fulfillmentForm.hidden_tag() }}
+  <p>
+    <h2>Search your order fulfillment</h2><br/>
+    {{ fulfillmentForm.searchfield() }}<br/>
+    {% for error in fulfillmentForm.searchfield().errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  {{ fulfillmentForm.submit(class_="btn btn-black") }}
+</form>
+
+
+<h2>Orders:</h2>
+  {% for i in range(purchases|length) %}
+    <table class='table table-hover table-bordered container' style = "overflow-wrap:break-word;table-layout:fixed;width:100%;">
+      <thead class="thead-dark">
+        <tr>
+          <th style = "width:10%;">Order id</th>
+          <th style = "width:20%;">Buyer Name</th>
+          <th style = "width:25%;">Buyer Address</th>
+          <th style = "width:25%;">Purchase Time</th>
+          <th style = "width:20%;">Overall Fulfillment Status</th>
+        </tr>
+      </thead>
+      <tr>
+        <td>{{ purchases[i][0] }}</td>
+        <td>{{ purchases[i][1].firstname }}</td>
+        <td>{{ purchases[i][1].address }}</td>
+        <td>{{ purchases[i][2] }}</td>
+        <td>
+          {% if purchases[i][3] %}
+            Fulfilled
+          {% else %}
+            Not Fulfilled
+          {% endif %}
+        </td>
+      </tr>
+      <thead class="thead-dark">
+        <tr>
+          <th>Product id</th>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Fulfillment Status</th>
+        </tr>
+      </thead>
+      {% for j in range(purchases[i][4]|length) %}
+        <tr>
+          <td>{{ purchases[i][4][j].pid }}</td>
+          <td>{{ purchases[i][5][j].name }}</td>
+          <td>{{ purchases[i][4][j].quantity }}</td>
+          <td>{{ purchases[i][4][j].finalprice }}</td>
+          <td>
+            {% if purchases[i][4][j].fulfillstate %}
+              Fulfilled
+            {% else %}
+              <a href="{{ '/order/fulfill/' + purchases[i][0]|string + '/' + purchases[i][4][j].pid|string}}">Fulfill</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    </br></br></br></br>
+  {% endfor %}
+
+{% endblock %}

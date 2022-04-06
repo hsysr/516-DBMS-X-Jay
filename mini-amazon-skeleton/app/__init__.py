@@ -27,4 +27,7 @@ def create_app():
     from .inventory import bp as inventory_bp
     app.register_blueprint(inventory_bp)
 
+    from .purchase import bp as purchase_bp
+    app.register_blueprint(purchase_bp)
+
     return app

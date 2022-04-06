@@ -16,15 +16,14 @@ class AddToCartForm(FlaskForm):
     submit = SubmitField('Add')
 
 @bp.route('/productdetails/<int:pid>', methods=['GET', 'POST'])
-def details(pid):# get all available products for sale:
+def details(pid):
     product = Product.get(pid)
     seller_info = Product.getSellerInfo(pid)
     return render_template('productdetails.html', avail_products = [product],seller_info = seller_info)
 
 
 @bp.route('/cart', methods=['GET', 'POST'])
-def cart():# get all available products for sale:
-    # TODO: get products & quantities in user's cart
+def cart():
     if not current_user.is_authenticated:
         return redirect(url_for('users.login'))
     cart = Cart.get(current_user.id)
@@ -48,7 +47,6 @@ def checkoutCart():
         
     result = Cart.checkout(current_user.id)
     if result=='success':
-        # TODO change flash message & add DB logic
         flash('~Purchase success~')
     else:
         flash(result)

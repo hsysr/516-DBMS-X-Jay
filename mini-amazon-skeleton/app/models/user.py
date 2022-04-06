@@ -134,3 +134,21 @@ WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
+
+    @staticmethod
+    def get_by_purchase_id(purchase_id):
+        rows = app.db.execute("""
+SELECT DISTINCT users.id, email, firstname, lastname, address, balance
+FROM users
+JOIN purchases
+ON purchases.uid = users.id AND purchases.id = :purchase_id
+""",
+                              purchase_id = purchase_id)
+        if rows:
+            ans = User(*(rows[0]))
+            ans.id = -1
+            ans.email = ""
+            ans.balance = -1
+            return ans
+        return None
+

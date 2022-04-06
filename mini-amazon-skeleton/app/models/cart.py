@@ -45,8 +45,9 @@ WHERE cart.uid = :uid AND cart.pid=products.id
         balance = User.get(uid).balance
         if balance < totalprice:
             return "Sorry, no enough balance on your account to pay"
-            
-        # TODO DB for real purchase. only validation for now
+           
+        prev_order_id = app.db.execute('''SELECT MAX(id) FROM purchases ''')
+        order_id = (prev_order_id[0][0] + 1) if prev_order_id[0][0] else 1
         for idx, cartItem in enumerate(cart):
             newQt = currentQt[idx] - cartItem.quantity
             row1 = app.db.execute('''
@@ -66,13 +67,11 @@ WHERE cart.uid = :uid AND cart.pid=products.id
             if not row2:
                 return "Oops, something goes wrong when processing your order"
                     
-            prev_order_id = app.db.execute('''SELECT MAX(id) FROM purchases ''')
-            order_id = (prev_order_id[0][0] + 1) if prev_order_id[0][0] else 1
             row3 = app.db.execute('''
-                INSERT INTO purchases(id, uid, pid, sid, quantity)
-                VALUES (:id, :uid, :pid, :sid, :quantity)
+                INSERT INTO purchases(id, uid, pid, sid, finalprice, quantity)
+                VALUES (:id, :uid, :pid, :sid, :price, :quantity)
                 RETURNING id
-                ''', id=order_id, uid=uid, pid=cartItem.pid, sid=cartItem.sid, quantity=cartItem.quantity)
+                ''', id=order_id, uid=uid, pid=cartItem.pid, sid=cartItem.sid, price=cartItem.unitprice, quantity=cartItem.quantity)
             if not row3:
                 return "Oops, something goes wrong when processing your order"
                     
