@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+  <form action="" method="post" novalidate>
+      {{ quantityform.hidden_tag() }}
+      <p>
+        {{ quantityform.quantity.label }}<br/>
+        {{ quantityform.quantity(size=32) }}<br/>
+        {% for error in quantityform.quantity.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+      </p>
+      {{ quantityform.submit(class_="btn btn-black") }}
+  </form>
+
+{% endblock %}

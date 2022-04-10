@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+  <form action="" method="post" novalidate>
+      {{ updateform.hidden_tag() }}
+      <p>
+        {{ updateform.description.label }}<br/>
+        {{ updateform.description(size=32) }}<br/>
+        {% for error in updateform.description.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+      </p>
+      {{ updateform.submit(class_="btn btn-black") }}
+  </form>
+
+{% endblock %}

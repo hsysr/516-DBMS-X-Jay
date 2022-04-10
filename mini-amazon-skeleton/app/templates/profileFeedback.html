@@ -2,16 +2,9 @@
 
 {% block content %}
 
-<h1>Public view </h1>
+<h2>Feedbacks Received: </h2>
 
-<p>Firstname: {{info.firstname}}</p>
-<p>Lastname: {{info.lastname}}</p>
-{% if isSeller|length > 0 %}
-<p>Email:{{info.email}}</p>
-<p>Address: {{info.address}}</p>
-
-<h4>Feedbacks for this seller</h4>
-{% if feedbacks|length != 0 %}
+{% if feedbackReceived|length != 0 %}
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -20,33 +13,25 @@
       <th scope="col">Review</th>
       <th scope="col">vote</th>
       <th scope="col">Time submitted</th>
-      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {% for feedback in feedbacks %}
+    {% for feedback in feedbackReceived %}
     <tr>
         <td> {{feedback.uid}} </td>
         <td> {{feedback.rating}} </td>
         <td> {{feedback.review}} </td>
         <td> {{feedback.vote}}</td>
         <td> {{feedback.time_submitted}} </td>
-        <td> <u>TODO vote helpful</u></td>
-        
     </tr>
     {% endfor %}
     </tbody>
   </table>
 
-{% else %}
-<p> no feedbacks for this seller </p>
-
-{% endif %}
 
 {% else %}
-<p>[This is not a seller]<p>
+<p>No feedback received yet</p>
 {% endif %}
-<br><br><br>
 
 {% endblock %}
 

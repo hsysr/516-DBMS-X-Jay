@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br><br>
+<h2>Detailed information for Order# {{orderid}}</h2>
+{% if orderDetail|length != 0 %}
+{% set total = [0] %}
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Image</th>
+      <th scope="col">Seller</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Unit Price(final)</th>
+      <th scope="col">FulFilled</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for orderItem in orderDetail %}
+      <tr>
+        <th scope="row">{{orderItem.pid}}</th>
+        <td><a href="{{url_for('products.details', pid=orderItem.pid)}}" >{{orderItem.productname}}</a></td>
+        <td><img src="{{url_for('static', filename='images/'+orderItem.pid|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
+        <td><a href="{{url_for('users.publicProfile', variable=orderItem.sid) }}">{{orderItem.sellerfirstname}} {{orderItem.sellerlastname}}</a></td>
+        <td>{{orderItem.quantity}}</td>
+        <td>{{orderItem.final_unitprice}}</td>
+        <td>{{orderItem.fulfilled}}</td>
+      </tr>
+      {% set _= total.append(total.pop() + orderItem.quantity * orderItem.final_unitprice) %}
+    {% endfor %}
+  </tbody>
+</table>
+<h4>Total is: {{total[0] }} </h4>
+
+{% else %}
+<h4>Can't find the order </h4>
+{% endif %}
+
+{% endblock %}
+
+

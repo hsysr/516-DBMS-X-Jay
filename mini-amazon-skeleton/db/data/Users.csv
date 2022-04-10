@@ -1,1 +1,6 @@
-0,icecream@tastes.good,pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb,Joey,Shmoey
+"id","email","password","firstname","lastname","address","balance"
+0,"icecream@tastes.good","pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb","Joey","Shmoey","1234 Triangle Circle",0
+1,"creamice@good.tastes","pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb","Austin","Texas","5678 Parkway Drive",37
+2,"yl819@duke.edu","pbkdf2:sha256:260000$qeA9VcURMZ2kAlc8$5ff613731f4278398f64fea67f6cef5ca93c55d1a2dfa4e857f58321e0a04473","Yue","Li","322 Erwin St",10
+3,"breath@hyrule.com","pbkdf2:sha256:260000$5f5ujkvD9AGqncoO$9ea254c6e0ace84ad8ba9e3394aa5b53b6e40cbc2d004be084fe9b99e4bb3e61","Zelda","Hyrule","300 Castle Drive",10000
+4,"sword@final.ff","pbkdf2:sha256:260000$QPFysgIqcbZ9PizR$09a5c61693e5ce8bb082e38d28f2a35d264a982edaa2482f6623899e056058b5","Cloud","Strife","567 Remake Rd",2

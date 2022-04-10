@@ -30,17 +30,19 @@
       {% for product in cart%}
         <tr>
           <th scope="row">{{product.pid}}</th>
-          <td>{{product.productname}}<br></td>
+          <td><a href="{{url_for('products.details', pid=product.pid)}}" >{{product.productname}}<br></td>
           <td><img src="{{url_for('static', filename='images/'+product.pid|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
-          <td>{{product.sellerfirstname}} {{product.sellerlastname}}</td>
-          <td>{{product.quantity}}</td>
+          <td><a href="{{url_for('users.publicProfile', variable=product.sid) }}">{{product.sellerfirstname}} {{product.sellerlastname}}</td>
+          <td>
+            {{product.quantity}}&nbsp;&nbsp;&nbsp;<a href="{{url_for('products.editQuantity', sid=product.sid, pid=product.pid) }}" class="btn btn-warning btn-sm" role="button">Change Quantity</a>
+            <a href="{{url_for('products.removeFromCart', sid=product.sid, pid=product.pid) }}" class="btn btn-danger btn-sm" role="button">Remove</a></td>
           <td>{{product.unitprice}}</td>
         </tr>
         {% set _= total.append(total.pop() + product.quantity * product.unitprice) %}
       {% endfor %}
     </tbody>
   </table>
-    <p>Total is: {{total[0] }} </p>
+    <h4>Total is: {{total[0] }} </h4>
 <a href = "{{url_for('products.checkoutCart')}}" class="btn btn-primary btn-lg" role="button">Checkout!</a>
 
   {% else %}

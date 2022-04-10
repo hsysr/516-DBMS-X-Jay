@@ -12,3 +12,7 @@ SELECT pg_catalog.setval('public.products_id_seq',
 
 
 \COPY Inventory FROM 'Inventory.csv' WITH DELIMITER ',' NULL '' CSV
+
+
+\COPY Product_feedback FROM 'product_feedback.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY Seller_feedback FROM 'seller_feedback.csv' WITH DELIMITER ',' NULL '' CSV

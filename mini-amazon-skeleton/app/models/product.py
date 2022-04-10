@@ -2,12 +2,13 @@ from flask import current_app as app
 
 
 class Product:
-    def __init__(self, id, name, available, category, minprice=None):
+    def __init__(self, id, name, available, category, minprice=None, avgrating=None,):
         self.id = id
         self.name = name
         self.available = available
         self.category = category
         self.minprice = minprice
+        self.avgrating = avgrating
 
 
     @staticmethod
@@ -103,3 +104,55 @@ WHERE uid=:uid AND pid=:pid AND sid=:sid
     RETURNING pid
     ''',            uid=uid, pid=pid, sid=sid,quantity=quantity)
             return rows[0] if rows is not None else None
+        
+    @staticmethod
+    def removeFromCart(uid,pid,sid):
+        deletequery = app.db.execute('''
+DELETE FROM Cart
+WHERE uid=:uid AND pid=:pid AND sid=:sid
+''',
+                uid=uid, pid=pid, sid=sid)
+        return deletequery if deletequery is not None else None
+
+    @staticmethod
+    def update_product_description(pid, sid, description):
+        rows = app.db.execute(f"""
+UPDATE Inventory
+SET description = '{description}'
+WHERE pid={pid} AND sid={sid}
+RETURNING pid
+""")
+        return None
+
+    @staticmethod
+    def update_quantity_in_cart(uid, pid, sid, quantity):
+        updatequery = app.db.execute('''
+UPDATE Cart
+SET quantity = :newQty
+WHERE uid=:uid AND pid=:pid AND sid=:sid
+''',
+                uid=uid, pid=pid, sid=sid, newQty=quantity)
+        return updatequery if updatequery is not None else None
+
+
+    @staticmethod
+    def set_avgratings(products):
+        rows = app.db.execute('''
+SELECT pid, AVG(ratings)
+FROM Product_Feedback
+GROUP BY pid
+''')
+        ratings = {id:avgrating for id,avgrating in rows}
+        for p in products:
+            if p.id in ratings.keys():
+                p.avgrating = ratings[p.id]
+        return products
+
+    @staticmethod
+    def get_product_ratings_and_reviews(pid):
+        rows = app.db.execute('''
+SELECT ratings, review, date(time_submitted)
+FROM Product_Feedback
+WHERE pid=:pid
+''', pid=pid)
+        return [{"rating":row[0], "review":row[1], "date":row[2]} for row in rows]

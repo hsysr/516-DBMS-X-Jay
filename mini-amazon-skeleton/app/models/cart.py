@@ -66,7 +66,7 @@ WHERE cart.uid = :uid AND cart.pid=products.id
                 ''', uid=uid, pid=cartItem.pid, sid=cartItem.sid)
             if not row2:
                 return "Oops, something goes wrong when processing your order"
-                    
+
             row3 = app.db.execute('''
                 INSERT INTO purchases(id, uid, pid, sid, finalprice, quantity)
                 VALUES (:id, :uid, :pid, :sid, :price, :quantity)

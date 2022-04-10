@@ -98,3 +98,15 @@ VALUES(:pid, :sid, :quantity, :price, :description)
             print(str(e))
             return None
         return "success"
+
+    @staticmethod
+    def get_low_inventory(sid):
+        rows = app.db.execute('''
+SELECT pid, sid, quantity, price, description
+FROM inventory
+WHERE sid = :sid
+AND quantity < 21
+''',
+                              sid=sid)
+        return [Inventory(*row) for row in rows]
+

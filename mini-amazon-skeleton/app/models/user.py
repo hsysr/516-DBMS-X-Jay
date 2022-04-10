@@ -134,7 +134,21 @@ WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
-
+        
+    @staticmethod
+    def getPublicView(id):
+        isSeller = app.db.execute('''
+SELECT pid FROM inventory WHERE sid=:uid
+''',        uid=id)
+        rows = app.db.execute("""
+SELECT id, email, firstname, lastname, address, balance
+FROM Users
+WHERE id = :id
+""",
+                              id=id)
+        userInfo = User(*(rows[0])) if rows else None
+        return isSeller, userInfo
+        
     @staticmethod
     def get_by_purchase_id(purchase_id):
         rows = app.db.execute("""
@@ -151,4 +165,21 @@ ON purchases.uid = users.id AND purchases.id = :purchase_id
             ans.balance = -1
             return ans
         return None
-
+        
+class SellerFeedback:
+    def __init__(self, uid, sid, rating, review, time_submitted, vote):
+        self.uid = uid
+        self.sid = sid
+        self.rating = rating
+        self.review = review
+        self.time_submitted = time_submitted
+        self.vote = vote
+    
+    @staticmethod
+    def getFeedback(sid):
+        rows = app.db.execute('''
+SELECT * FROM seller_feedback
+WHERE sid = :sid
+    ''',    sid=sid)
+        return [SellerFeedback(*row) for row in rows]
+    

@@ -16,11 +16,132 @@
 
 <hr/>
 <a href="{{ url_for('products.cart') }}" type="button" class="btn btn-light">Your Cart</a>
+<a href="{{ url_for('users.profileFeedback') }}" type="button" class="btn btn-light"> Feedbacks</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
 <a href="{{ url_for('purchase.order_fulfillment') }}" type="button" class="btn btn-light">Order Fulfillment</a>
 
 
+<br><br>
+
+{% if current_user.is_authenticated %}
+
+<br><br>
+
+<h4>Filter/Search Your Orders:</h4>
+<form action="" method="post" novalidate>
+    {{ searchform.hidden_tag() }}
+    <p>
+      {{ searchform.productNameKeyword.label }}
+      {{ searchform.productNameKeyword(size=32) }}<br/>
+      {% for error in searchform.productNameKeyword.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ searchform.sellerFirstNameKeyword.label }}
+      {{ searchform.sellerFirstNameKeyword(size=32) }}<br/>
+      {% for error in searchform.sellerFirstNameKeyword.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ searchform.sellerLastNameKeyword.label }}
+      {{ searchform.sellerLastNameKeyword(size=32) }}<br/>
+      {% for error in searchform.sellerLastNameKeyword.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ searchform.date.label }}
+      {{ searchform.date(size=32) }}<br/>
+      {% for error in searchform.date.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+    </p>
+    {{ searchform.submit(class_="btn btn-black") }}
+</form>
+
+<br>
+    {% if filteredItems|length != 0 %}
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col">Time purchased</th>
+            <th scope="col">Product ID</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Seller</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit Price(final)</th>
+            <th scope="col">FulFilled</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in filteredItems %}
+        <tr>
+            <th scope="row">{{item.orderid}}</th>
+            <td>{{item.time_purchased}}</td>
+            <td>{{item.pid}}</td>
+            <td><a href="{{url_for('products.details', pid=item.pid)}}" >{{item.productname}}</a></td>
+            <td><a href="{{url_for('users.publicProfile', variable=item.sid) }}"> {{item.sellerfirstname}} {{item.sellerlastname}}</a></td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.final_unitprice}}</td>
+            <td>{{item.fulfilled}}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+    {% else %}
+<p>No filtered result</p>
+    {% endif %}
     
-<h1>View Feedback</h1>
+<br><br>
+    <h2>Your Purchase History:</h2>
+    {% if purchase_history|length != 0 %}
+    <table class='table table-hover table-bordered container'>
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Order ID</th>
+          <th scope="col">Total Price</th>
+          <th scope="col">Total Quantity</th>
+          <th scope="col">Time purchased</th>
+          <th scope="col">Overall fulfilled</th>
+          <th scope="col"> </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for purchase in purchase_history%}
+          <tr>
+            <th scope="row">{{purchase.orderid}}</th>
+            <td>{{purchase.totalprice}}</td>
+            <td>{{purchase.totalQt}}</td>
+            <td>{{purchase.time_purchased}}</td>
+            <td>{{purchase.isFulfill}}</td>
+            <td> <a href="{{url_for('products.orderDetail', orderid=purchase.orderid) }}" class="btn btn-primary btn-lg" role="button">Order Detail</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p> No purchase yet</p><br>
+    {% endif %}
+
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history and feedbacks!</p>
+{% endif %}
 {% endblock %}
+
 

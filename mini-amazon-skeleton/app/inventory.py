@@ -9,6 +9,7 @@ from werkzeug.datastructures import MultiDict
 
 from .models.product import Product
 from .models.inventory import Inventory
+from .models.purchase import Productsell
 
 import os
 
@@ -133,3 +134,18 @@ def add_product_to_inventory(pid):
     return render_template('add_product_to_inventory.html',
                            current_product = current_product,
                            form = form)
+
+
+@bp.route('/inventory/analysis', methods = ['GET'])
+def inventory_analysis():
+    if not current_user.is_authenticated:
+        return redirect(url_for('users.login'))
+    inventory_low = Inventory.get_low_inventory(current_user.id)
+    popular_products = Productsell.get_most_popular(current_user.id)
+
+    names = [Product.get(invent.pid).name for invent in inventory_low]
+
+    return render_template('inventory_analysis.html',
+                           inventory_low=inventory_low,
+                           names=names,
+                           popular_products=popular_products)

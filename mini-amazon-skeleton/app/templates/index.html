@@ -50,6 +50,7 @@
       <th scope="col">Image</th>
       <th scope="col">Category</th>
       <th scope="col">Minimum Price</th>
+      <th scope="col">Average Rating</th>
       <!-- <th scope="col">Price</th> -->
     </tr>
   </thead>
@@ -61,35 +62,10 @@
         <td><img src="{{url_for('static', filename='images/'+product.id|string+'.png')}}" alt='no product image.' width="256" height="256" /></td>
         <td>{{product.category}}</td>
         <td>{{product.minprice}}</td>
-        <!-- <td>{{product.price}}</td> -->
+        <td>{{'%0.2f' % product.avgrating if product.avgrating else ""}}</td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
-
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Your recent purchases:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Purchase ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for purchase in purchase_history%}
-      <tr>
-        <th scope="row">{{purchase.id}}</th>
-        <td>{{purchase.pid}}</td>
-        <td>{{purchase.time_purchased}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your purchase history!</p>
-{% endif %}
 
 {% endblock %}

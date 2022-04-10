@@ -89,3 +89,33 @@ ALTER TABLE ONLY Cart
 
 ALTER TABLE ONLY Cart
     ADD CONSTRAINT cart_sid_fkey FOREIGN KEY (sid) REFERENCES Users(id);
+
+
+--------------------------------------
+-- below is for feedback
+
+
+CREATE TABLE Product_Feedback(
+    uid INT NOT NULL REFERENCES Users(id),
+    pid INT NOT NULL REFERENCES Products(id),
+    ratings INT NOT NULL,
+    review VARCHAR(3000) NOT NULL,
+    time_submitted timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
+    vote INT NOT NULL
+);
+
+CREATE TABLE Seller_Feedback(
+    uid INT NOT NULL REFERENCES Users(id),
+    sid INT NOT NULL REFERENCES Users(id),
+    ratings INT NOT NULL,
+    review VARCHAR(3000) NOT NULL,
+    time_submitted timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
+    vote INT NOT NULL
+);
+
+
+ALTER TABLE ONLY Product_Feedback
+    ADD CONSTRAINT Product_Feedback_pkey PRIMARY KEY (uid, pid);
+
+ALTER TABLE ONLY Seller_Feedback
+    ADD CONSTRAINT Seller_Feedback_pkey PRIMARY KEY (uid, sid);

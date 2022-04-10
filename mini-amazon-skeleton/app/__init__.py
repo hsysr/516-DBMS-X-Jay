@@ -29,5 +29,5 @@ def create_app():
 
     from .purchase import bp as purchase_bp
     app.register_blueprint(purchase_bp)
-
+    
     return app
